@@ -1,0 +1,25 @@
+# filepath: c:\Users\joaog\Documents\Projetos Pessoais\rabbitmq-facul\requirements.txt
+# Dependências Python para o projeto RabbitMQ
+
+# RabbitMQ client
+pika==1.3.2
+
+# Configuração e ambiente
+python-dotenv==1.0.0
+
+# Utilidades para logging e datetime
+colorama==0.4.6
+
+# Para processamento JSON avançado (opcional)
+jsonschema==4.19.2
+
+# Para debugging e profiling (opcional)
+memory-profiler==0.61.0
+psutil==5.9.6
+
+# Para testes (se necessário)
+pytest==7.4.3
+pytest-mock==3.12.0
+
+# Para documentação (opcional)
+markdown==3.5.1

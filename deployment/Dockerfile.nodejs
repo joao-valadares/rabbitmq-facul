@@ -1,0 +1,49 @@
+# Dockerfile para containers Node.js
+FROM node:18-slim
+
+# Metadata
+LABEL maintainer="Academic Project"
+LABEL description="Node.js container for RabbitMQ interoperability"
+LABEL version="1.0.0"
+
+# Instalar dependências do sistema
+RUN apt-get update && apt-get install -y \
+    curl \
+    wget \
+    vim \
+    && rm -rf /var/lib/apt/lists/*
+
+# Criar usuário não-root
+RUN groupadd -r appuser && useradd -r -g appuser appuser
+
+# Criar diretório de trabalho
+WORKDIR /app
+
+# Copiar package.json e package-lock.json
+COPY interoperability/package*.json ./
+
+# Instalar dependências
+RUN npm ci --only=production && npm cache clean --force
+
+# Copiar código da aplicação
+COPY interoperability/ .
+
+# Criar diretório de logs
+RUN mkdir -p /app/logs && chown -R appuser:appuser /app
+
+# Mudar para usuário não-root
+USER appuser
+
+# Variáveis de ambiente padrão
+ENV NODE_ENV=production
+ENV LOG_LEVEL=INFO
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD node -e "const amqp = require('amqplib'); amqp.connect('amqp://${RABBITMQ_USER:-admin}:${RABBITMQ_PASS:-admin123}@${RABBITMQ_HOST:-rabbitmq}:${RABBITMQ_PORT:-5672}').then(conn => conn.close()).catch(() => process.exit(1))"
+
+# Expor porta (se necessário)
+EXPOSE 3000
+
+# Comando padrão
+CMD ["node", "--version"]

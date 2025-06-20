@@ -1,0 +1,24 @@
+{
+  "name": "rabbitmq-interoperability-nodejs",
+  "version": "1.0.0",
+  "description": "Node.js consumer for RabbitMQ interoperability demonstration",
+  "main": "consumer2.js",
+  "scripts": {
+    "start": "node consumer2.js",
+    "dev": "nodemon consumer2.js"
+  },
+  "dependencies": {
+    "amqplib": "^0.10.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "keywords": [
+    "rabbitmq",
+    "nodejs",
+    "interoperability",
+    "messaging"
+  ],
+  "author": "Academic Project",
+  "license": "MIT"
+}
