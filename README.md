@@ -36,13 +36,6 @@ ProducerSubnet (Brazil South)
 
 ### 3. Configuração Manual
 ```bash
-# Instalar dependências
-pip install -r requirements.txt
-
-# Configurar ambiente
-cp .env.example .env
-# Editar .env com suas configurações
-
 # Executar qualquer cenário
 cd direct_exchange/
 python producer.py    # Terminal 1
@@ -51,7 +44,7 @@ python consumer2.py   # Terminal 3
 python consumer3.py   # Terminal 4
 ```
 
-## 📋 Cenários Implementados (10/10)
+## 📋 Cenários Implementados
 
 ### ✅ 1. Direct Exchange (`direct_exchange/`)
 **Conceito**: Roteamento baseado em routing key exata
@@ -116,33 +109,6 @@ python consumer3.py   # Terminal 4
 - **Consumer3**: JavaScript (amqplib + ES6+)
 - **Demonstração**: JSON como formato universal
 
-## 🔧 Configuração de Ambiente
-
-### Variáveis de Ambiente (.env)
-```env
-# RabbitMQ Configuration
-RABBITMQ_HOST=localhost
-RABBITMQ_PORT=5672
-RABBITMQ_USER=guest
-RABBITMQ_PASS=guest
-RABBITMQ_VHOST=/
-
-# Application Configuration
-LOG_LEVEL=INFO
-APP_ENV=development
-
-
-### Dependências por Tecnologia
-
-#### Python
-```bash
-pip install pika python-dotenv colorama
-```
-
-#### Node.js
-```bash
-npm install amqplib
-```
 
 ## 🌐 Deployment no Azure
 
@@ -151,66 +117,8 @@ npm install amqplib
 - **Virtual Network 1**: 10.0.0.0/16
 - **Virtual Network 2**: 10.1.0.0/16
 - **VMs**: Standard_B1s (1 vCPUs, 1GB RAM)
-- **Network Security Group**: Portas 22, 5672, 15672 abertas
 
 
-## 📊 Cenários de Teste e Validação
-Broadcast para todos os consumers conectados.
-
-### 3. Topic Exchange (`topic_exchange/`)
-Roteamento baseado em padrões de routing key.
-
-### 4. Headers Exchange (`headers_exchange/`)
-Roteamento baseado em headers das mensagens.
-
-### 5. Round Robin (`round_robin/`)
-Balanceamento de carga simples entre consumers.
-
-### 6. Round Robin Ponderado (`round_robin_weighted/`)
-Balanceamento usando prefetch diferente por consumer.
-
-### 7. Persistência (`persistence/`)
-Demonstra mensagens persistentes vs transientes.
-
-### 8. Acknowledgments (`acknowledgments/`)
-Confirmação manual vs automática de mensagens.
-
-### Testes de Funcionalidade
-
-#### 1. Teste de Conectividade
-```bash
-# Testar conectividade básica
-python -c "import pika; print('✅ pika OK')"
-ping rabbitmq-host  # Teste de rede
-```
-
-#### 2. Teste de Throughput
-```bash
-# Executar cada cenário por 2 minutos
-# Medir: mensagens/segundo, latência, uso de recursos
-```
-
-#### 3. Teste de Failover
-```bash
-# 1. Parar broker durante envio
-docker stop rabbitmq-server
-
-# 2. Verificar comportamento dos clients
-# 3. Reiniciar broker
-docker start rabbitmq-server
-
-# 4. Verificar recuperação de mensagens
-```
-
-#### 4. Teste de Interoperabilidade
-```bash
-# Executar producer Python + consumers em 3 linguagens
-cd interoperability/
-python producer.py &           # Terminal 1
-python consumer1.py &          # Terminal 2  
-node consumer2.js &            # Terminal 3
-node consumer3.js              # Terminal 4
-```
 
 ## 📁 Estrutura Completa do Projeto
 
@@ -296,99 +204,9 @@ rabbitmq-facul/
 │   └── README.md                   # Documentação do cenário
 ```
 
-## 🎓 Casos de Uso Acadêmicos por Cenário
-
-### Direct Exchange - E-commerce
-- **Pedidos**: routing key `order.created`
-- **Pagamentos**: routing key `payment.processed`
-- **Estoque**: routing key `inventory.updated`
-
-### Fanout Exchange - Cache Invalidation
-- **Producer**: Sistema principal
-- **Consumers**: Multiple cache layers, CDNs, database replicas
-
-### Topic Exchange - Sistema de Logs
-- **Patterns**: `app.*.error`, `system.#`, `*.warning.*`
-- **Consumers**: Error handling, system monitoring, warning aggregation
-
-### Headers Exchange - Multi-tenant SaaS
-- **Headers**: `tenant_id`, `region`, `subscription_level`
-- **Consumers**: Region-specific processors, tier-based handlers
-
-### Round Robin - Task Queue
-- **Uso**: Image processing, email sending, report generation
-- **Workers**: Identical processing capability
-
-### Weighted Round Robin - Heterogeneous Workers
-- **Uso**: Different server capacities, varying processing times
-- **Workers**: High-end server (prefetch=10), medium (prefetch=5), basic (prefetch=1)
-
-### Persistence - Critical Data
-- **Transient**: Temporary notifications, cache updates
-- **Persistent**: Financial transactions, user data, audit logs
-
-### Acknowledgments - Reliability Patterns
-- **Auto ACK**: High-throughput, loss-tolerant (metrics, logs)
-- **Manual ACK**: Critical processing (payments, orders)
-- **Smart ACK**: Intelligent retry with circuit breaker
-
-### Priority Queue - Alert System
-- **P10**: System down, security breach
-- **P7**: Application errors
-- **P5**: Warnings
-- **P1**: Debug info, batch jobs
-
-### Interoperability - Microservices
-- **Python**: Data processing service
-- **Node.js**: Real-time API service  
-- **JavaScript**: Modern web service integration
----
-
 ## 🏆 Conclusão
 
-Este projeto demonstra de forma prática e completa os principais padrões de mensageria distribuída usando RabbitMQ. Cada cenário foi cuidadosamente projetado para ilustrar conceitos específicos e casos de uso reais, fornecendo uma base sólida para entender sistemas de mensageria em ambientes distribuídos.
+Este projeto demonstra de forma prática e completa os principais padrões de mensageria distribuída usando RabbitMQ. Cada cenário foi projetado para ilustrar conceitos específicos e casos de uso reais, fornecendo uma base sólida para entender sistemas de mensageria em ambientes distribuídos.
 
 A implementação distribuída no Azure simula condições reais de produção, onde diferentes componentes rodam em máquinas separadas, comunicando-se através da rede. Isso oferece uma experiência autêntica de desenvolvimento e deployment de sistemas distribuídos.
 
-**Principais aprendizados:**
-- Diferentes padrões de roteamento e suas aplicações
-- Estratégias de balanceamento de carga
-- Importância de durabilidade e acknowledgments
-- Interoperabilidade entre linguagens
-- Deployment e operação em ambiente cloud
-
-Este projeto serve como uma excelente base para estudos avançados em arquiteturas distribuídas, microsserviços e sistemas de alta disponibilidade.
-
----
-
-**Desenvolvido para fins acadêmicos** | **Licença: MIT** | **Versão: 1.0.0**
-
-## Características dos Scripts
-
-- **Idempotentes**: Criam recursos necessários se não existirem
-- **Isolados**: Cada cenário usa nomes únicos
-- **Configuráveis**: Usam variáveis de ambiente
-- **Documentados**: Comentários explicativos detalhados
-
-## Deployment em Azure VMs
-
-### 1. Preparação das VMs
-```bash
-# Em cada VM
-sudo apt update
-sudo apt install python3 python3-pip
-pip3 install pika python-dotenv
-```
-
-### 2. Configuração de Rede
-- Liberação da porta 5672 (AMQP)
-- Liberação da porta 15672 (Management UI)
-- Configuração de Security Groups
-
-### 3. Variáveis de Ambiente
-```bash
-export RABBITMQ_HOST=<IP_DO_BROKER_VM>
-export RABBITMQ_PORT=5672
-export RABBITMQ_USER=guest
-export RABBITMQ_PASSWORD=guest
-```
