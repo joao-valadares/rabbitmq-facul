@@ -14,57 +14,24 @@ Este projeto acadêmico demonstra **10 cenários obrigatórios** de mensageria d
 ## 🏗️ Arquitetura Distribuída
 
 ```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   VM1 - Broker  │    │  VM2 - Producer │    │ VM3 - Consumer1 │
-│                 │    │                 │    │                 │
-│   RabbitMQ      │◄───┤   Python App    │    │   Python App    │
-│   Management    │    │   (Any Scenario)│    │   (Any Scenario)│
-│   :15672        │    │                 │    │                 │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-         ▲                       │                       ▲
-         │                       │                       │
-         └───────────────────────┼───────────────────────┘
-                                 ▼
-         ┌─────────────────┐    ┌─────────────────┐
-         │ VM4 - Consumer2 │    │ VM5 - Consumer3 │
-         │                 │    │                 │
-         │   Python App    │    │   Python App    │
-         │   (Any Scenario)│    │   (Any Scenario)│
-         │                 │    │                 │
-         └─────────────────┘    └─────────────────┘
-```
+ProducerSubnet (Brazil South)
++-----------------+
+|   VM2 - Producer|  -->   BrokerSubnet (Brazil South)
++-----------------+            |
+                               v
+                         +-----------------+
+                         |  VM1 - Broker   |
+                         |  RabbitMQ       | - - - - - - - - - - - 
+                         +-----------------+                     |
+                               |                                 |
+                               v                                 v
+                ConsumersSubnet-1(Brazil South)         ConsumerSubnet2 (East US)
+                      |         |                                |
+                      v         v                                v
+         +----------------+  +----------------+            +----------------+
+         | VM3 - Consumer1|  | VM4 - Consumer2|            |VM5 - Consumer3 |
+         +----------------+  +----------------+            +----------------+
 
-## 🚀 Quick Start
-
-### 1. Deploy Automático no Azure
-```bash
-# Instalar Azure CLI: https://aka.ms/azure-cli
-az login
-
-# Deploy completo (3 VMs)
-cd deployment/
-chmod +x azure-deploy.sh
-./azure-deploy.sh deploy
-
-# Ou deployment customizado
-VM_COUNT=5 LOCATION=eastus ./azure-deploy.sh deploy
-```
-
-### 2. Setup Local com Docker
-```bash
-# Clonar repositório
-git clone <repo-url>
-cd rabbitmq-facul
-
-# Executar com Docker Compose
-docker-compose -f deployment/docker-compose.yml up -d
-
-# Ou apenas RabbitMQ
-docker run -d --name rabbitmq-server \
-  -p 5672:5672 -p 15672:15672 \
-  -e RABBITMQ_DEFAULT_USER=admin \
-  -e RABBITMQ_DEFAULT_PASS=admin123 \
-  rabbitmq:3-management
 ```
 
 ### 3. Configuração Manual
@@ -164,11 +131,6 @@ RABBITMQ_VHOST=/
 LOG_LEVEL=INFO
 APP_ENV=development
 
-# Azure Configuration (para deployment)
-AZURE_RESOURCE_GROUP=rabbitmq-facul-rg
-AZURE_LOCATION=brazilsouth
-AZURE_VM_SIZE=Standard_B2s
-```
 
 ### Dependências por Tecnologia
 
@@ -185,39 +147,12 @@ npm install amqplib
 ## 🌐 Deployment no Azure
 
 ### Recursos Criados
-- **Resource Group**: rabbitmq-facul-rg
-- **Virtual Network**: 10.0.0.0/16
-- **VMs**: Standard_B2s (2 vCPUs, 4GB RAM)
-- **Storage**: Standard SSD
+- **Resource Group**: azure-rabbitmq-rg
+- **Virtual Network 1**: 10.0.0.0/16
+- **Virtual Network 2**: 10.1.0.0/16
+- **VMs**: Standard_B1s (1 vCPUs, 1GB RAM)
 - **Network Security Group**: Portas 22, 5672, 15672 abertas
 
-### Comandos de Deployment
-```bash
-# Deploy completo
-./deployment/azure-deploy.sh deploy
-
-# Listar informações das VMs
-./deployment/azure-deploy.sh info
-
-# Criar inventário
-./deployment/azure-deploy.sh inventory
-
-# Limpeza (CUIDADO!)
-./deployment/azure-deploy.sh cleanup
-```
-
-### Acesso às VMs
-```bash
-# SSH para as VMs
-ssh -i ~/.ssh/rabbitmq-facul-key azureuser@<IP_PUBLICO>
-
-# Usuário da aplicação
-sudo su - rabbitmq-app
-
-# RabbitMQ Management UI
-http://<IP_PUBLICO>:15672
-# Usuário: admin | Senha: admin123
-```
 
 ## 📊 Cenários de Teste e Validação
 Broadcast para todos os consumers conectados.
@@ -359,13 +294,6 @@ rabbitmq-facul/
 │   ├── consumer3.js                # Consumer JavaScript (ES6+)
 │   ├── package.json                # Dependências Node.js
 │   └── README.md                   # Documentação do cenário
-│
-└── 🚀 deployment/                  # Scripts de deployment
-    ├── azure-deploy.sh             # Deploy automático no Azure
-    ├── azure-setup.sh              # Setup de VM individual
-    ├── docker-compose.yml          # Orquestração local
-    ├── Dockerfile.python           # Container Python
-    └── Dockerfile.nodejs           # Container Node.js
 ```
 
 ## 🎓 Casos de Uso Acadêmicos por Cenário
@@ -414,130 +342,6 @@ rabbitmq-facul/
 - **Python**: Data processing service
 - **Node.js**: Real-time API service  
 - **JavaScript**: Modern web service integration
-
-## 📈 Métricas e KPIs
-
-### Performance Benchmarks (por cenário)
-| Cenário | Throughput | Latência | CPU | Memória |
-|---------|------------|----------|-----|---------|
-| Direct | ~500 msg/s | 2-5ms | 15% | 50MB |
-| Fanout | ~300 msg/s | 5-10ms | 25% | 75MB |
-| Topic | ~250 msg/s | 8-15ms | 20% | 60MB |
-| Headers | ~200 msg/s | 10-20ms | 30% | 80MB |
-| Round Robin | ~400 msg/s | 3-8ms | 18% | 55MB |
-| Priority | ~350 msg/s | 1-50ms* | 22% | 65MB |
-| Interop | ~150 msg/s | 15-30ms | 35% | 120MB |
-
-*Varia conforme prioridade da mensagem
-
-### Métricas de Qualidade
-- **Confiabilidade**: 99.9% (com acknowledgments)
-- **Disponibilidade**: 99.5% (com cluster)
-- **Escalabilidade**: Linear até 10 consumers
-- **Latência P95**: < 50ms (maioria dos cenários)
-
-## 🛠️ Troubleshooting
-
-### Problemas Comuns
-
-#### 1. Conexão Recusada
-```bash
-# Verificar se RabbitMQ está rodando
-docker ps | grep rabbitmq
-systemctl status rabbitmq-server
-
-# Verificar portas
-netstat -tlnp | grep 5672
-```
-
-#### 2. Autenticação Falha
-```bash
-# Verificar usuário/senha no .env
-cat .env | grep RABBITMQ
-
-# Criar usuário (se necessário)
-docker exec rabbitmq-server rabbitmqctl add_user admin admin123
-docker exec rabbitmq-server rabbitmqctl set_user_tags admin administrator
-```
-
-#### 3. Messages não chegam
-```bash
-# Verificar filas no Management UI
-http://localhost:15672
-
-# Ver logs detalhados
-export LOG_LEVEL=DEBUG
-python producer.py
-```
-
-#### 4. Performance baixa
-```bash
-# Ajustar prefetch_count
-channel.basic_qos(prefetch_count=10)
-
-# Monitorar recursos
-htop
-docker stats
-```
-
-### Logs Importantes
-```bash
-# RabbitMQ logs
-docker logs rabbitmq-server
-
-# Application logs
-tail -f logs/*.log
-
-# System logs  
-journalctl -u rabbitmq-server -f
-```
-
-## 🎯 Próximos Passos e Extensões
-
-### Funcionalidades Avançadas
-- [ ] **Clustering**: Setup de cluster RabbitMQ
-- [ ] **High Availability**: Filas espelhadas
-- [ ] **Federation**: Conectar múltiplos brokers
-- [ ] **Shovel**: Migração de mensagens
-- [ ] **Dead Letter Queues**: Tratamento de falhas
-- [ ] **Message TTL**: Expiração de mensagens
-- [ ] **Plugins**: MQTT, STOMP, WebSockets
-
-### Monitoramento Avançado
-- [ ] **Prometheus + Grafana**: Métricas detalhadas
-- [ ] **ELK Stack**: Centralização de logs
-- [ ] **Alerting**: Notificações automáticas
-- [ ] **Tracing**: Rastreamento distribuído
-
-### Automação
-- [ ] **CI/CD**: Pipeline de deployment
-- [ ] **Terraform**: Infrastructure as Code
-- [ ] **Ansible**: Configuração automatizada
-- [ ] **Kubernetes**: Orquestração de containers
-
-## 📚 Referências e Recursos
-
-### Documentação Oficial
-- [RabbitMQ Documentation](https://www.rabbitmq.com/documentation.html)
-- [AMQP 0-9-1 Protocol](https://www.rabbitmq.com/tutorials/amqp-concepts.html)
-- [RabbitMQ Management](https://www.rabbitmq.com/management.html)
-
-### Livros Recomendados
-- "RabbitMQ in Action" - Alvaro Videla
-- "Microservices Patterns" - Chris Richardson
-- "Building Event-Driven Microservices" - Adam Bellemare
-
-### Cursos e Tutoriais
-- [RabbitMQ Official Tutorials](https://www.rabbitmq.com/getstarted.html)
-- [CloudAMQP Blog](https://www.cloudamqp.com/blog/)
-- [Microsoft Azure Messaging](https://docs.microsoft.com/en-us/azure/architecture/patterns/messaging/)
-
-### Ferramentas Complementares
-- **Apache Kafka**: Para streaming de dados
-- **Redis Pub/Sub**: Para mensageria simples
-- **Apache Pulsar**: Para casos de uso híbridos
-- **NATS**: Para microsserviços cloud-native
-
 ---
 
 ## 🏆 Conclusão
@@ -588,28 +392,3 @@ export RABBITMQ_PORT=5672
 export RABBITMQ_USER=guest
 export RABBITMQ_PASSWORD=guest
 ```
-
-## Troubleshooting
-
-### Conexão Recusada
-- Verifique se o RabbitMQ está rodando
-- Confirme as configurações de firewall
-- Valide as credenciais
-
-### Mensagens não são entregues
-- Verifique os bindings
-- Confirme as routing keys
-- Analise os logs dos consumers
-
-### Performance
-- Ajuste o prefetch_count
-- Use connection pooling
-- Monitore uso de memória
-
-## Contribuição
-
-Este projeto é para fins acadêmicos. Contribuições são bem-vindas!
-
-## Licença
-
-MIT License - Uso acadêmico livre.
