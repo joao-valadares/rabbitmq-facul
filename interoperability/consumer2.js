@@ -1,4 +1,3 @@
-# filepath: c:\Users\joaog\Documents\Projetos Pessoais\rabbitmq-facul\interoperability\consumer2.js
 /**
  * Consumer Node.js para Interoperabilidade
  * Demonstra consumo de mensagens enviadas pelo producer Python usando Node.js
@@ -16,7 +15,7 @@ const QUEUE_NAME = "nodejs_queue";
 const RABBITMQ_HOST = process.env.RABBITMQ_HOST || 'localhost';
 const RABBITMQ_PORT = process.env.RABBITMQ_PORT || 5672;
 const RABBITMQ_USER = process.env.RABBITMQ_USER || 'guest';
-const RABBITMQ_PASS = process.env.RABBITMQ_PASS || 'guest';
+const RABBITMQ_PASSWORD = process.env.RABBITMQ_PASSWORD || 'guest';
 
 // Estatísticas globais
 const stats = {
@@ -45,7 +44,7 @@ async function main() {
             hostname: RABBITMQ_HOST,
             port: RABBITMQ_PORT,
             username: RABBITMQ_USER,
-            password: RABBITMQ_PASS
+            password: RABBITMQ_PASSWORD
         });
         
         const channel = await connection.createChannel();
