@@ -85,7 +85,7 @@ def main():
                 priority_icon = get_priority_icon(priority)
                 
                 # Log de recebimento
-                print(f"📥 MSG #{msg_id:03s} | "
+                print(f"📥 MSG #{msg_id:03d} | "
                       f"{priority_icon} P{priority} | "
                       f"{severity:8s} | "
                       f"{msg_type:15s} | "
@@ -119,7 +119,7 @@ def main():
                 elapsed = datetime.now() - stats['start_time']
                 uptime = str(elapsed).split('.')[0]
                 
-                print(f"✅ MSG #{msg_id:03s} | "
+                print(f"✅ MSG #{msg_id:03d} | "
                       f"Processed in {actual_time:.1f}s | "
                       f"Total: {stats['processed']} | "
                       f"Uptime: {uptime}")

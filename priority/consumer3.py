@@ -103,7 +103,7 @@ def main():
                 priority_icon = get_priority_icon(priority)
                 
                 # Log de recebimento com tempo de espera
-                print(f"📥 MSG #{msg_id:03s} | "
+                print(f"📥 MSG #{msg_id:03d} | "
                       f"{priority_icon} P{priority} | "
                       f"{severity:8s} | "
                       f"Wait: {wait_time:.1f}s | "
@@ -139,7 +139,7 @@ def main():
                 
                 efficiency = "🔋" if actual_time <= 1.0 else "⚡" if actual_time <= 2.0 else "🕐"
                 
-                print(f"✅ MSG #{msg_id:03s} | "
+                print(f"✅ MSG #{msg_id:03d} | "
                       f"{efficiency} {actual_time:.1f}s | "
                       f"Total: {stats['processed']} | "
                       f"Uptime: {uptime}")
