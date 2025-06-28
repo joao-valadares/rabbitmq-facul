@@ -81,14 +81,24 @@ def main():
         # Configura QoS
         channel.basic_qos(prefetch_count=1)
         
-        # Cria exchange, fila e binding (idempotente)
-        create_exchange_and_queue(
-            channel=channel,
-            exchange_name=EXCHANGE_NAME,
+        # Declara o exchange (idempotente)
+        channel.exchange_declare(
+            exchange=EXCHANGE_NAME,
             exchange_type=EXCHANGE_TYPE,
-            queue_name=QUEUE_NAME,
-            routing_key=ROUTING_PATTERN,
             durable=True
+        )
+        
+        # Declara a fila (idempotente)
+        channel.queue_declare(
+            queue=QUEUE_NAME,
+            durable=True
+        )
+        
+        # Cria o binding para Topic Exchange
+        channel.queue_bind(
+            exchange=EXCHANGE_NAME,
+            queue=QUEUE_NAME,
+            routing_key=ROUTING_PATTERN
         )
         
         logger.info(f"Exchange '{EXCHANGE_NAME}' declarado")
