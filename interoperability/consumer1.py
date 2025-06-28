@@ -314,6 +314,8 @@ def process_notification_send_python(message, logger):
             logger.info("📱 Preparando envio por SMS...")
         elif channel == 'push':
             logger.info("🔔 Preparando push notification...")
+        elif channel == 'webhook':
+            logger.info("🔗 Preparando webhook HTTP...")
         else:
             raise ValueError(f"Canal não suportado: {channel}")
         

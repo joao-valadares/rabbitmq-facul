@@ -191,8 +191,15 @@ def main():
             
             log_message_sent(
                 logger, 
-                message_count, 
-                f"{lang_icon} {target_lang.upper()}: {template['type']}"
+                EXCHANGE_NAME,
+                target_lang,
+                f"{lang_icon} {target_lang.upper()}: {template['type']}",
+                pika.BasicProperties(
+                    delivery_mode=2,
+                    content_type='application/json',
+                    message_id=message["_meta"]["message_id"],
+                    correlation_id=message["_meta"]["correlation_id"]
+                )
             )
             
             print(f"📤 MSG #{message_count:03d} | "
