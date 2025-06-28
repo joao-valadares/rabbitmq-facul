@@ -118,15 +118,20 @@ def main():
                     }
                 )
             )
-            
-            # Log detalhado
+              # Log detalhado
             priority_icon = get_priority_icon(msg_type["priority"])
             severity = get_severity_level(msg_type["priority"])
-            
+
             log_message_sent(
                 logger, 
-                message_count, 
-                f"[{priority_icon} P{msg_type['priority']}] {msg_type['type']}: {msg_type['description']}"
+                EXCHANGE_NAME, 
+                QUEUE_NAME,
+                f"[{priority_icon} P{msg_type['priority']}] {msg_type['type']}: {msg_type['description']}",
+                pika.BasicProperties(
+                    priority=msg_type["priority"],
+                    delivery_mode=2,
+                    message_id=str(message_count)
+                )
             )
             
             print(f"📤 MSG #{message_count:03d} | "
