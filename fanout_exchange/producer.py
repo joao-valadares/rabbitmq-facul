@@ -48,6 +48,23 @@ def main():
             durable=True
         )
         
+        # Declara as filas que os consumers irão usar
+        queue_names = [
+            "fanout_queue_notifications",
+            "fanout_queue_audit", 
+            "fanout_queue_metrics"
+        ]
+        
+        logger.info("Declarando filas para os consumers...")
+        for queue_name in queue_names:
+            channel.queue_declare(queue=queue_name, durable=True)
+            channel.queue_bind(
+                exchange=EXCHANGE_NAME,
+                queue=queue_name,
+                routing_key=''  # Ignorada em fanout
+            )
+            logger.info(f"Fila '{queue_name}' declarada e vinculada")
+        
         logger.info("Producer iniciado. Fazendo broadcast a cada 4 segundos...")
         logger.info("Pressione Ctrl+C para parar")
         
