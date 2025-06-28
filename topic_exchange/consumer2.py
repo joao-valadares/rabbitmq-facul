@@ -24,7 +24,7 @@ def main():
     EXCHANGE_NAME = "topic_exchange_demo"
     EXCHANGE_TYPE = "topic"
     QUEUE_NAME = "topic_queue_warnings"
-    ROUTING_PATTERN = "warning.*"  # Qualquer warning de qualquer sistema
+    ROUTING_PATTERN = "system.warning.*"  # Qualquer warning de qualquer sistema
     
     # Setup
     print_scenario_header(
