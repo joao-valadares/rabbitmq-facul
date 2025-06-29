@@ -1,17 +1,5 @@
-# 🌐 Projeto de Mensageria Distribuída com RabbitMQ
 
-Este projeto acadêmico demonstra **10 cenários obrigatórios** de mensageria distribuída utilizando RabbitMQ em ambiente distribuído (múltiplas VMs Azure). Cada cenário possui 1 producer e 3 consumers, com código idempotente e documentação completa.
-
-## 🎯 Objetivos Acadêmicos
-
-- Demonstrar padrões de mensageria em sistemas distribuídos
-- Implementar diferentes tipos de exchanges e routing
-- Comparar estratégias de balanceamento de carga
-- Explorar durabilidade e acknowledgments
-- Demonstrar interoperabilidade entre linguagens
-- Configurar ambiente distribuído na nuvem (Azure)
-
-## 🏗️ Arquitetura Distribuída
+## Arquitetura 
 
 ```
 ProducerSubnet (Brazil South)
@@ -34,7 +22,7 @@ ProducerSubnet (Brazil South)
 
 ```
 
-### 3. Configuração Manual
+### Execução
 ```bash
 # Executar qualquer cenário
 cd direct_exchange/
@@ -110,7 +98,7 @@ python consumer3.py   # Terminal 4
 - **Demonstração**: JSON como formato universal
 
 
-## 🌐 Deployment no Azure
+## Deployment no Azure
 
 ### Recursos Criados
 - **Resource Group**: azure-rabbitmq-rg
@@ -119,94 +107,9 @@ python consumer3.py   # Terminal 4
 - **VMs**: Standard_B1s (1 vCPUs, 1GB RAM)
 
 
+## Conclusão
 
-## 📁 Estrutura Completa do Projeto
-
-```
-rabbitmq-facul/
-├── 📋 README.md                    # Documentação principal
-├── 📋 .env.example                 # Template de configuração
-├── 📋 requirements.txt             # Dependências Python
-│
-├── 🔧 utils/                       # Utilitários compartilhados
-│   ├── common.py                   # Funções comuns (conexão, logging)
-│   └── README.md                   # Documentação dos utilitários
-│
-├── 🎯 direct_exchange/             # Cenário 1: Roteamento direto
-│   ├── producer.py                 # Producer com routing keys específicas
-│   ├── consumer1.py                # Consumer para user notifications
-│   ├── consumer2.py                # Consumer para admin alerts
-│   ├── consumer3.py                # Consumer para system logs
-│   └── README.md                   # Documentação do cenário
-│
-├── 📡 fanout_exchange/             # Cenário 2: Broadcast
-│   ├── producer.py                 # Producer para updates gerais
-│   ├── consumer1.py                # Consumer cache service
-│   ├── consumer2.py                # Consumer analytics service
-│   ├── consumer3.py                # Consumer notification service
-│   └── README.md                   # Documentação do cenário
-│
-├── 🔀 topic_exchange/              # Cenário 3: Roteamento por padrão
-│   ├── producer.py                 # Producer com routing patterns
-│   ├── consumer1.py                # Consumer para *.error.*
-│   ├── consumer2.py                # Consumer para app.#
-│   ├── consumer3.py                # Consumer para system.*.warning
-│   └── README.md                   # Documentação do cenário
-│
-├── 🏷️ headers_exchange/             # Cenário 4: Roteamento por headers
-│   ├── producer.py                 # Producer com headers dinâmicos
-│   ├── consumer1.py                # Consumer para região BR + alta prioridade
-│   ├── consumer2.py                # Consumer para customer_type = premium
-│   ├── consumer3.py                # Consumer com x-match=any
-│   └── README.md                   # Documentação do cenário
-│
-├── ⚖️ round_robin/                  # Cenário 5: Balanceamento simples
-│   ├── producer.py                 # Producer de tarefas uniformes
-│   ├── consumer1.py                # Worker 1 (processamento básico)
-│   ├── consumer2.py                # Worker 2 (processamento básico)
-│   ├── consumer3.py                # Worker 3 (processamento básico)
-│   └── README.md                   # Documentação do cenário
-│
-├── ⚖️ round_robin_weighted/         # Cenário 6: Balanceamento ponderado
-│   ├── producer.py                 # Producer de tarefas variadas
-│   ├── consumer1.py                # Worker rápido (prefetch=5)
-│   ├── consumer2.py                # Worker médio (prefetch=3)
-│   ├── consumer3.py                # Worker lento (prefetch=1)
-│   └── README.md                   # Documentação do cenário
-│
-├── 💾 persistence/                 # Cenário 7: Durabilidade
-│   ├── producer.py                 # Producer com mensagens persistentes/transientes
-│   ├── consumer1.py                # Consumer para dados críticos
-│   ├── consumer2.py                # Consumer para dados temporários
-│   ├── consumer3.py                # Consumer para teste de recovery
-│   └── README.md                   # Documentação do cenário
-│
-├── ✅ acknowledgments/             # Cenário 8: Confirmações
-│   ├── producer.py                 # Producer para testes de ACK
-│   ├── consumer1.py                # Consumer com auto ACK (risco)
-│   ├── consumer2.py                # Consumer com manual ACK (seguro)
-│   ├── consumer3.py                # Consumer com smart ACK (inteligente)
-│   └── README.md                   # Documentação do cenário
-│
-├── 🎚️ priority/                    # Cenário 9: Filas com prioridade
-│   ├── producer.py                 # Producer com mensagens priorizadas
-│   ├── consumer1.py                # Consumer para alertas críticos
-│   ├── consumer2.py                # Consumer para operações gerais
-│   ├── consumer3.py                # Consumer para processamento em lote
-│   └── README.md                   # Documentação do cenário
-│
-├── 🌐 interoperability/            # Cenário 10: Múltiplas linguagens
-│   ├── producer.py                 # Producer Python (JSON universal)
-│   ├── consumer1.py                # Consumer Python (recursos nativos)
-│   ├── consumer2.js                # Consumer Node.js (async/await)
-│   ├── consumer3.js                # Consumer JavaScript (ES6+)
-│   ├── package.json                # Dependências Node.js
-│   └── README.md                   # Documentação do cenário
-```
-
-## 🏆 Conclusão
-
-Este projeto demonstra de forma prática e completa os principais padrões de mensageria distribuída usando RabbitMQ. Cada cenário foi projetado para ilustrar conceitos específicos e casos de uso reais, fornecendo uma base sólida para entender sistemas de mensageria em ambientes distribuídos.
+Este projeto demonstra de forma prática e completa os principais padrões de mensageria distribuída usando RabbitMQ. Cada cenário foi projetado para demonstrar conceitos específicos e casos de uso reais, fornecendo uma base sólida para entender sistemas de mensageria em ambientes distribuídos.
 
 A implementação distribuída no Azure simula condições reais de produção, onde diferentes componentes rodam em máquinas separadas, comunicando-se através da rede. Isso oferece uma experiência autêntica de desenvolvimento e deployment de sistemas distribuídos.
 
